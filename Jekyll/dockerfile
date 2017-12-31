@@ -1,0 +1,21 @@
+FROM stefanscherer/chocolatey:latest
+
+RUN choco install ruby -y --version 2.3
+
+# http://guides.rubygems.org/ssl-certificate-update/#installing-using-update-packages
+#RUN powershell invoke-webrequest -uri https://raw.githubusercontent.com/rubygems/rubygems/master/lib/rubygems/ssl_certs/index.rubygems.org/GlobalSignRootCA.pem -outfile c:\tools\ruby23\lib\ruby\2.3.0\rubygems\ssl_certs\GlobalSignRootCA.pem
+COPY GlobalSignRootCA.pem tools/ruby23/lib/ruby/2.3.0/rubygems/ssl_certs/GlobalSignRootCA.pem
+
+RUN choco install ruby2.devkit -y
+COPY config.yml tools/devkit2/config.yml
+
+RUN gem install jekyll
+
+# https://github.com/tzinfo/tzinfo/wiki/Resolving-TZInfo::DataSourceNotFound-Errors
+RUN gem install tzinfo-data
+RUN gem install bundle
+# RUN gem install github-pages
+
+
+COPY run.cmd .
+COPY cacert.pem .
